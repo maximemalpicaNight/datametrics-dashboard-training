@@ -1,8 +1,18 @@
 'use client';
 
+import { useState } from "react";
+
 // TODO: Exercise 1 - Add proper types to these props
 // Hint: Create a type like: type UserCardProps = { ... }
-function UserCard(props: any) {
+
+type UserCardProps = { 
+  name: string; 
+  email: string; 
+  role?: "admin" | "user";
+}
+
+
+function UserCard(props: UserCardProps) {
   return (
     <div className="border p-4 rounded-lg">
       <h3 className="font-semibold">{props.name}</h3>
@@ -15,17 +25,25 @@ function UserCard(props: any) {
 // TODO: Exercise 2 - Create a type for Product
 // Hint: type Product = { id: number; name: string; price: number; inStock?: boolean }
 // Then use it to type the products array below
-const products = [
+type Product = { id: number; name: string; price: number; inStock?: boolean }
+const products:Product[] = [
   { id: 1, name: 'Laptop', price: 999, inStock: true },
   { id: 2, name: 'Mouse', price: 29, inStock: false },
 ];
 
+
+
 // TODO: Exercise 3 - Type the ProductList component props
 // It should accept an array of products
-function ProductList(props: any) {
+
+type ProductListProps =  {
+  products: Product[];
+}
+
+function ProductList(props: ProductListProps) {
   return (
     <div className="space-y-2">
-      {props.products.map((product: any) => (
+      {props.products.map((product: Product) => (
         <div key={product.id} className="border p-3 rounded">
           <p className="font-medium">{product.name}</p>
           <p className="text-sm text-gray-600">${product.price}</p>
@@ -43,11 +61,25 @@ function ProductList(props: any) {
 function ContactForm() {
   // TODO: Add proper types to useState
   // Hint: useState<FormData>({ name: '', email: '', message: '' })
-  const [formData, setFormData] = (null as any);
+  
+  type Form = {
+    name:string;
+    email:string;
+    message:string;
+  }
+
+  const [formData, setFormData] = useState<Form>({ name: '', email: '', message: '' })
 
   return (
     <div className="text-sm text-gray-500">
       <p>TODO: Type the form state and handlers</p>
+      <form>
+        {/*<input id="name" type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} /> */}
+        <input id="name" type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} />
+        <input id="email" type="text" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
+        <input id="message" type="text" value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})} />
+      </form>
+
     </div>
   );
 }
@@ -69,7 +101,7 @@ export default function TypeScriptPractice() {
           Replace <code className="bg-gray-100 px-1 rounded">any</code> with proper types in UserCard component.
         </p>
         <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-          <UserCard name="Alice" email="alice@example.com" role="Admin" />
+          <UserCard name="Alice" email="alice@example.com" role="admin" />
           <UserCard name="Bob" email="bob@example.com" />
         </div>
       </section>

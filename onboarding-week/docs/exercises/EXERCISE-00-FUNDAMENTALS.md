@@ -34,23 +34,31 @@ Each section includes **in-app practice exercises** at `/practice` to reinforce 
 ```javascript
 // 1. Transform array of numbers to doubled values
 const numbers = [1, 2, 3, 4, 5];
-const doubled = /* your code here */
+const doubled = numbers.map(n => n * 2)
 
 // 2. Filter only even numbers
-const evens = /* your code here */
+const evens = numbers.filter(n => n % 2 === 0)
 
 // 3. Sum all numbers using reduce
-const sum = /* your code here */
+const sum = numbers.reduce((acc, cur) => acc + cur, 0)
 
 // 4. Transform array of users to just names
 const users = [{id: 1, name: 'Alice'}, {id: 2, name: 'Bob'}];
-const names = /* your code here */
+const names = users.map(user => user.name)
 ```
 
 **Key Concepts:**
-- What does `map()` return? When do you use it in React?
+ What does `map()` return? When do you use it in React?
+
+The map method returns a new array where an operation has been performed on each element. The map method is used in JSX, for example, to display a list of data.
+
 - Difference between `filter()` and `find()`?
+
+The main difference is that filter returns an array based on a condition, while find returns the first element that matches the condition.
+
 - What is `reduce()` and why is it powerful?
+
+Reduce is a method that allows you to traverse an array using an accumulator (a value that will be available throughout the method) and the current value, which is the value.
 
 **💻 In-App Practice:** After completing the reading, practice array methods in the app at [/practice/arrays](/practice/arrays)
 
@@ -64,11 +72,11 @@ const names = /* your code here */
 ```javascript
 // Object destructuring
 const user = { name: 'Alice', age: 25, email: 'alice@example.com' };
-const { name, age } = /* extract name and age */
+const { name, age } = user
 
 // Array destructuring
 const colors = ['red', 'green', 'blue'];
-const [first, second] = /* extract first and second */
+const [first, second] = colors
 
 // Spread operator - copy and add
 const newUser = { ...user, country: 'USA' };
@@ -77,8 +85,26 @@ const newColors = [...colors, 'yellow'];
 
 **Key Concepts:**
 - How to destructure function parameters (props)?
+
+You can destruct a function parameter using {}.
+
+example :
+
+function Car({color}) {
+  return (
+    <h2>My car is {color}!</h2>
+  );
+}
+
+Here, we will only retrieve the color value passed as an argument.
+
 - Why can't you modify state directly in React?
+
+By directly modifying the value of a variable in React, React does not know that the value has been modified and therefore cannot render it. The only way to modify a state is via its internal setState function.
+
 - How spread creates new objects/arrays?
+
+Spread create a new array/objey by unpacking the original array/object and making a shallow copy. Which is a copy of the reference to the original object, modifying an embedded object in the copy will also affect the original, and vice versa.
 
 ### 1.3 Promises & Async/Await (15 min)
 **Why:** Data fetching in React uses async operations.
@@ -88,7 +114,12 @@ const newColors = [...colors, 'yellow'];
 
 **Key Concepts:**
 - What is a Promise?
+
+A promise represents that may be available now, in the future or never. In the cas of asynchronous operation it makes sense because, we do not know the return value during the operation, so we have to wait for the result and therefore use a promise. 
+
 - async/await vs .then()
+
+The async await will pause the function execution until the promise settles. With then(), the rest of the function will continue to execute but JavaScript won't execute the .then() callback until the promise settles.
 
 ---
 
@@ -102,7 +133,14 @@ const newColors = [...colors, 'yellow'];
 
 **Key Concepts:**
 - Difference between `type` and `interface`?
+
+A type can be used to type a primary type, for example: type Id = string | number
+
+Interfaces only allow objects to be created, and they can also be merged (which types cannot do).
+
 - What is type inference?
+
+This comes from the compiler, which automatically deduces the type of a variable. For example, in the case of let x = 5, the compiler deduces that 5 is a Number, so the developer does not need to type this variable.
 - When to use `any` (almost never!)
 
 ### 2.2 Typing React Components (30 min)
@@ -126,8 +164,29 @@ function Button({ label, onClick, disabled }: ButtonProps) {
 
 **Key Concepts:**
 - How to type component props?
+
+To type a component props, you can use a type with the name of the component + props in order to have a clear syntax. Then you indicate the different parameters that the component will take.
+
+Example:
+
+type ButtonProps = {
+label: string;
+};
+
+
+function Button({ label }: ButtonProps) {
+return <button>{label}</button>;
+}
+
 - What is the `?` for optional props?
+
+This makes the props optional, meaning that it is acceptable not to provide them in the component.
+
 - How to type event handlers?
+
+The event types are provided by React, so we don't need to type them ourselves.
+
+For example, if we have a handleSubmit function that is triggered by the submit of a form <form onSubmit={handleSubmit}>," here we can type the function by directly using an react.FormEvent<HTMLFormElement> .
 
 **💻 In-App Practice:** After completing the reading, practice TypeScript in the app at [/practice/typescript](/practice/typescript)
 
@@ -143,9 +202,28 @@ function Button({ label, onClick, disabled }: ButtonProps) {
 
 **Key Concepts to Understand:**
 - What is the component tree?
+
+The component tree allows React to structure the components of the entire application. Components are defined as nodes. We can therefore say that the root node is the app.js file.
+
+The tree hierarchy consists of the top and bottom. At the top are the components closest to the root, which therefore influence performance, while the leaf components are at the bottom and are less likely to change, have less impact on performance, and are more likely to be re-rendered.
+
+The component tree is linked by branches. These links in the code refer to an import, for example: import PageWrapper from "@/components/ui/Button".
+
 - What does "declarative" mean?
+
+This concept allows you to define what you want to display in the UI without focusing on how to do it. In the case of React, I can have a state that changes a color. Here, I only need to declare the state that allows me to display it. Outside of React, it takes care of applying the changes (re-rendering).
+
 - One-way data flow: what does this mean?
+
+Data can be passed from a parent component to a child component (via props), and this is done in one direction only, from the top of the hierarchy to the bottom. A changing value includes reactivity, and therefore a parent that sends reactivity to a child must take into account that its child will then have to render this component, which must be considered in terms of performance.
+
 - UI = f(state) - explain this formula
+
+UI = f(state) means that the user interface depends on the state of the application, the function f takes this state as a parameter and produces the corresponding UI, and each time the state changes, the UI is automatically recalculated from this function.
+
+This equality shows that the interface visible at the present moment is the result of the state at that same moment with a function.
+
+An example would be: component f takes the state and produces the interface.
 
 ### 3.2 Components: When and Why (45 min)
 **Why:** Component design is an art. Learn when to create components vs when to keep code together.
@@ -154,9 +232,33 @@ function Button({ label, onClick, disabled }: ButtonProps) {
 
 **Key Concepts:**
 - When should you create a new component?
+
+At first, when we notice repetitive logic in multiple components, we allow for reusability.
+
+Example: create a reusable button component throughout my app, in which case I can reuse it throughout my codebase. no need to recode it.
+
+We can also create a new component if our page includes several different logics, for example on a page we can have the Header, the Footer, Cards, etc., which each have different logic.
+
 - What makes a component reusable?
+
+A component must be autonomous and operate with its own internal logic, without its parents being able to affect that logic. This makes it rigid and not sensitive to break.
+
+The parent component can modify a component through its props without breaking it, so a component must be designed to be customizable while still keeping a clear and specific goal.
+
+Example: a Button component displays a button; however, its parent component can customize it.
+
 - Component vs Container pattern (what's the difference?)
+
+A component handles the display logic, while a container serves to wrap a more internal and applicative logic, for example in the case of global states with contexts. Here, we need to containerize our app so that the global state is available throughout the entire application.
+
 - Single Responsibility Principle
+
+A component must have a goal to achieve, which leads to a single reason to change if I want to make modifications to this code. So if I need to modify this component, it becomes easier because my component only achieves one goal.
+
+Other advantages:
+Makes unit testing easier
+Makes maintenance easier
+Reduces redundancy
 
 **Practice: Analyze This UI**
 ```
@@ -171,9 +273,23 @@ Dashboard Page
 ```
 
 Questions:
+Questions:
 - Which parts should be separate components? Why?
+
+Header => Logo, Navbar, Login, Signup, ProfilePicture.
+
+Card => CardTitle, CardDescription, CardStatistics
+
+Chart => ChartTitle, ChartDescription, LineChart.
+
 - Should MetricCard be one component or four?
+
+I prefer a single component here because the MetricCards component retrieves the data (different data but using the same component) and maps it by reusing the Card component.
+
 - When would you extract a component?
+
+In the exercise, if the application needs to have multiple charts (PieChart, BarChart, LineChart), in this case it would be necessary to extract the different types of charts into components.
+
 
 **💻 In-App Practice:** After completing the reading, practice component design in the app at [/practice/components](/practice/components)
 
@@ -201,10 +317,31 @@ function Counter() {
   );
 }
 
-// Questions:
+/ Questions:
 // - Why can't you do: count = count + 1?
+
+/* 
+Because the count is read-only and therefore immutable, this comes from React because changing the value of the variable in this way does not cause a re-render. To trigger a change in count, you must use setCount.
+*
+
+
 // - What does setCount(count + 1) return?
+
+// setCount does not return anything; its purpose is to put the state change in the queue
+
+// the current value without any modification, beacause the values is not already rendered.
+
 // - How to update based on previous state?
+/*
+const [count, setCount] = useState(0);
+
+function increment() {
+  setCount(prevCount => prevCount + 1);
+}
+
+Here, I am sure that my state will be updated with the previous value; otherwise (if I spam the clicks, I risk having value jumps).
+
+*/
 ```
 
 **Key Concepts:**

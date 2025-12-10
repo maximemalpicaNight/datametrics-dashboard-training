@@ -1,0 +1,14 @@
+export default function Card({label, value, trend, change}: {label:string, value:string, trend:string, change:string}) {
+
+    return (
+        <div className="border rounded-lg p-6 bg-white">
+            <p className="text-sm text-gray-600">{label}</p>
+            <p className="text-3xl font-bold mt-2">{value}</p>
+            <div className="mt-2 flex items-center">
+                <span className={`text-sm ${trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
+                {trend === 'up' ? '↑' : '↓'} {change}
+                </span>
+            </div>
+        </div>
+    )
+} 
