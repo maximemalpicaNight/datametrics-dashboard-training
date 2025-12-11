@@ -43,6 +43,12 @@ const exercises = [
     description: 'Extract reusable logic into custom hooks',
     topics: ['useToggle', 'useLocalStorage', 'useDebounce'],
   },
+  {
+    title: 'Final exercise',
+    href: '/practice/final',
+    description: '',
+    topics: [''],
+  },
 ];
 
 export default function PracticeHome() {

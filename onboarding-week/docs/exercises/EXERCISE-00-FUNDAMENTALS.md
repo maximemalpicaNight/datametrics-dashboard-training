@@ -346,7 +346,18 @@ Here, I am sure that my state will be updated with the previous value; otherwise
 
 **Key Concepts:**
 - State vs variables: what's the difference?
+A state persists between renders, while the variable is refreshed between renders.
+
+State(t) => state(t+1) => state(t+2)
+
+variable(t) => variable(t) => variable(t)
+
+(=> = rerender)
+
 - Why call setState instead of mutating?
+
+setState allows to trigger a render. by directly mutatting the variable there is no rendering,  so visualy nothing happens.
+
 - Functional updates: `setState(prev => prev + 1)`
 
 **💻 In-App Practice:** After completing the reading, practice useState in the app at [/practice/state](/practice/state)
@@ -375,14 +386,31 @@ function UserProfile({ userId }) {
 
 // Questions:
 // - What is the dependency array for?
+The array says that this comes from the userId dependency. Here, useEffect is triggered during initial rendering and when the userId value changes.
+
 // - What happens if you omit []?
+
+useEffect would be triggered each time the component is rendered.
+
 // - When does useEffect run?
+
+useEffect always runs after render, not during render.
+
 ```
 
 **Key Concepts:**
 - What are "side effects"?
+
+Side effects are any operation after the render. such as : fetch api, modify the dom.
+
 - Dependency array: why is it important?
+
+This allows the useffect to trigger it using a state or props. This allows you to maintain control over the use effect.
+
 - Cleanup functions (returning from useEffect)
+
+render => useEffect => cleanup => useEffect => cleanup => unmount
+
 - Common mistake: infinite loops
 
 **💻 In-App Practice:** After completing the reading, practice useEffect in the app at [/practice/effects](/practice/effects)
@@ -418,11 +446,16 @@ function MyComponent() {
   // ...
 }
 ```
-
 **Key Concepts:**
 - When to extract a custom hook?
+
+When logic is repetitive (avoid copying code), to lighten the codebase, reuse it in others components , maintain a Single Responsibility Principle.
+
 - Naming: must start with "use"
+
 - What should a custom hook return?
+
+Unlike components that should return JSX, here we return data (number, array, string, etc.).
 
 **💻 In-App Practice:** After completing the reading, practice custom hooks in the app at [/practice/hooks](/practice/hooks)
 
@@ -491,12 +524,12 @@ State:
 **Practice: Identify Props vs State**
 ```javascript
 // Which should be props? Which should be state?
-function ProfileCard() {
-  // User name - shown but never changes in this component
-  // Like count - changes when user clicks button
-  // Profile photo URL - passed from parent
-  // isEditing - toggles edit mode
-  // Submit button loading state - changes during save
+function ProfileCard({username, profilePicture}) {
+  // User name - shown but never changes in this component => props
+  // Like count - changes when user clicks button => state
+  // Profile photo URL - passed from parent => props
+  // isEditing - toggles edit mode => state
+  // Submit button loading state - changes during save => state
 }
 ```
 
@@ -519,8 +552,15 @@ function ProfileCard() {
 
 **Key Concepts:**
 - Controlled vs uncontrolled forms
+
+A form controller stores these values in a state, which re render each time the value changes, except for a non-controller component that stores its values directly in the DOM, which does not generate a re-render (this is the technique used by React Hooks).
+
 - Why use a form library?
+
+A form library allows to : Managing errors, validation data, tracking and keep input data, Reset form. 
+
 - Form validation
+
 - Performance benefits
 
 **Note:** You'll practice forms in Exercise 04, but understand the concept now.
@@ -578,30 +618,91 @@ After completing all sections, answer these questions **in your own words**:
 
 ### JavaScript/TypeScript
 1. Explain what `map()` does and when to use it in React.
+
+In JS, map allows you to iterate through an array by applying a function to each value and returns the array. It can also be used directly in JSX to return HTML for each element traversed. In JSX, don't forget the key, as it allows React to identify each element in the list. For example, if the list changes, instead of re-rendering the entire list, it can update only the relevant elements.
+
 2. Why can't you do `state.push(item)` in React?
+
+In React, you cannot modify a value directly because this does not trigger a re-render, and therefore the modification will not be visible in the UI.
+
 3. What is the spread operator and why is it important?
+
+The spread operator is the syntax (...) used to copy an array/object. It allows you to copy without modifying the original, making the JS lighter, and works well with destructuring.
+
 4. What's the difference between `type` and `interface` in TypeScript?
+
+The interface has a more rigid structure because it only accepts objects, but it allows this structure to be extended. With types, it is more flexible; you can type unions, objects, and primitives.
 
 ### Thinking in React
 5. Explain "UI as a function of state" in one paragraph.
+
+UI depends on the state, if i change a state value, this re render the ui, and display the new ui with the new state value.
+
 6. When should you create a new component vs keeping code in one component?
+
+- In case of state change, avoid rendering an entire large component (only re-render the components affected by the state).
+- More readable code, each component performs a task and does so independently.
+- Component reusable throughout my codebase => no need to rewrite code.
+
 7. What is component composition and why is it important?
+
+Component compisition is building the ui with "smart" Components. 
+Each components must be reusable, follow a single logic, performs a task and does so independently.
 
 ### React Hooks
 8. What does `useState` return? Explain both values.
+
+useState return an array with two values. The current state (during the initial render is the initialvalue passed by parameters). The set function that its used to update the state value and trigger a re-render.
+
 9. What is the dependency array in `useEffect` for?
+
+The dependency array is the second argument in the useEffect Hook and is used to specify the variables the effect depends on.
+
 10. What are the Rules of Hooks and why do they exist?
+
+Only call Hooks at the top level (avoid calls Hooks inside conditions or loops,event handlers, try catch).
+Only call Hooks from React functions ().
+
+React does not accept if you dont follow these rules. Otherwise he will returns an error.
+
 11. When should you create a custom hook?
+
+- If i have repetivie logic => Reusing Logic Across Components.
+- To Simplify the code, Readability.
 
 ### Props vs State
 12. Explain the difference between props and state.
+
+Props are any data passed FROM parent TO child, they are ot mutable.
+
+State is a reactive data use in component. he can be modify and trigger re-renders.
+
 13. What does "lifting state up" mean and when do you do it?
+
+It is the principle of lifting a child's state to that of a parent by declaring the state directly in the parent.
+
+its used when you want to maintain a single direction of data flow.
+
 14. Can a component modify its props? Why or why not?
+
+It is not able to do so unless we pass it a function in the same props that allows it to modify this value.
 
 ### Array Methods in React
 15. Show how to render a list of users using `map()`.
+
+{users.map((user) => (
+  <div key={user.id}>
+    {user.name}
+  </div>
+))}
+
 16. Show how to filter todos to only show completed ones.
+
+const filteredTodos = todos.filter((todo) => todo.status == true )
+
 17. How would you calculate the total price from an array of products?
+
+const total = array.reduce((acc, cur) => acc + cur, 0)
 
 ---
 
