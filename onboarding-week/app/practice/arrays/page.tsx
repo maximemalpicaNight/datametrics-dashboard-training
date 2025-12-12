@@ -18,24 +18,34 @@ export default function ArrayMethodsPractice() {
   // TODO: Exercise 1 - Use map() to display all products
   // Hint: products.map(product => <div key={product.id}>...</div>)
   const renderProducts = () => {
-    return <p className="text-gray-500">TODO: Render products here using map()</p>;
+    return(products.map(product => <div key={product.id} className='flex gap-2'>
+      <div>{product.name}</div>
+      <div>{product.price}</div>
+      <div>{product.category}</div>
+    </div>));
   };
 
   // TODO: Exercise 2 - Use filter() to show only products under maxPrice
   // Hint: const filtered = products.filter(p => p.price <= maxPrice)
+  const filtered = products.filter(p => p.price <= maxPrice)
   const filterProducts = () => {
-    return <p className="text-gray-500">TODO: Filter and render products under ${maxPrice}</p>;
+    return (filtered.map(product => <div key={product.id} className='flex gap-2'>
+      <div>{product.name}</div>
+      <div>{product.price}</div>
+      <div>{product.category}</div>
+    </div>));
   };
 
   // TODO: Exercise 3 - Use reduce() to calculate total price of all products
   // Hint: products.reduce((sum, product) => sum + product.price, 0)
   const calculateTotal = (): number => {
-    return 0; // TODO: Replace with reduce() calculation
+    return products.reduce((sum, product) => sum + product.price, 0); // TODO: Replace with reduce() calculation
   };
 
   // TODO: Exercise 4 - Use filter() + reduce() to calculate total of filtered products
+
   const calculateFilteredTotal = (): number => {
-    return 0; // TODO: Combine filter and reduce
+    return filtered.reduce((sum, product) => sum + product.price, 0);; // TODO: Combine filter and reduce
   };
 
   return (

@@ -2,6 +2,11 @@
 
 // This is a monolithic component that needs refactoring
 // TODO: Exercise 1 - Extract reusable components from this mess
+import Card from "./Card"
+import Badge from "./Badge"
+import BadgeV2 from "./BadgeV2"
+import StatCard from "./StatCard"
+import RefactoredDashboard from "./RefactoredDashboard"
 
 function MonolithicDashboard() {
   const stats = [
@@ -17,23 +22,15 @@ function MonolithicDashboard() {
       {/* TODO: Extract this repeating card pattern into a component */}
       <div className="grid grid-cols-3 gap-4">
         {stats.map((stat) => (
-          <div key={stat.label} className="border rounded-lg p-6 bg-white">
-            <p className="text-sm text-gray-600">{stat.label}</p>
-            <p className="text-3xl font-bold mt-2">{stat.value}</p>
-            <div className="mt-2 flex items-center">
-              <span className={`text-sm ${stat.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
-                {stat.trend === 'up' ? '↑' : '↓'} {stat.change}
-              </span>
-            </div>
-          </div>
+          <Card key={stat.label} label={stat.label} value={stat.value} change={stat.change} trend={stat.trend} />
         ))}
       </div>
 
       {/* TODO: Extract badge component */}
       <div className="flex gap-2">
-        <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">Active</span>
-        <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">Verified</span>
-        <span className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Pending</span>
+        <Badge status={"Active"} style={" bg-blue-100 text-blue-800 "} />
+        <Badge status={"Verified"} style={" bg-green-100 text-green-800 "} />
+        <Badge status={"Pending"} style={" bg-yellow-100 text-yellow-800 "} />
       </div>
     </div>
   );
@@ -41,11 +38,15 @@ function MonolithicDashboard() {
 
 // TODO: Exercise 2 - Create a reusable Badge component
 // Hint: type BadgeProps = { label: string; variant: 'blue' | 'green' | 'yellow' }
-// Example usage: <Badge label="Active" variant="blue" />
+// Example usage: <Badge label="Active" variant="blue" /> 
+
+// ./BadgeV2
 
 // TODO: Exercise 3 - Create a reusable StatCard component
 // Hint: type StatCardProps = { label: string; value: string; change: string; trend: 'up' | 'down' }
 // Example usage: <StatCard label="Revenue" value="$45,231" change="+20.1%" trend="up" />
+
+// ./StatCard
 
 // TODO: Exercise 4 - Refactor MonolithicDashboard to use your new components
 
@@ -78,7 +79,7 @@ export default function ComponentsPractice() {
         </p>
         <div className="bg-gray-50 p-4 rounded-lg">
           <p className="text-gray-500 text-sm">TODO: Create Badge component and use it here</p>
-          {/* Example: <Badge label="Success" variant="green" /> */}
+          <BadgeV2 label="Success" variant="green" />
         </div>
       </section>
 
@@ -90,7 +91,7 @@ export default function ComponentsPractice() {
         </p>
         <div className="bg-gray-50 p-4 rounded-lg">
           <p className="text-gray-500 text-sm">TODO: Create StatCard component and use it here</p>
-          {/* Example: <StatCard label="Revenue" value="$45,231" change="+20.1%" trend="up" /> */}
+          <StatCard label="Revenue" value="$45,231" change="+20.1%" trend="up" />
         </div>
       </section>
 
@@ -108,6 +109,8 @@ export default function ComponentsPractice() {
       {/* Expected Results */}
       <section className="border-t pt-6 bg-yellow-50 p-4 rounded-lg">
         <h3 className="font-semibold text-yellow-900 mb-2">✅ Expected Results:</h3>
+  
+
         <ul className="text-sm text-yellow-800 space-y-1">
           <li>• Badge component is reusable with different variants</li>
           <li>• StatCard component is reusable with different data</li>
@@ -124,6 +127,10 @@ export default function ComponentsPractice() {
           </ul>
         </div>
       </section>
+
+      <RefactoredDashboard />
+
+    
     </div>
   );
 }

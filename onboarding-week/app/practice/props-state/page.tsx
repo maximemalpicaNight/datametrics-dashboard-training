@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -7,18 +8,15 @@ import { useState } from 'react';
 function UserGreeting(props: { name: string; age: number }) {
   return (
     <div className="bg-white p-4 rounded border">
-      <p>Hello, {props.name}!</p>
-      <p className="text-sm text-gray-600">You are {props.age} years old.</p>
+      <div>name : {props.name}, age : {props.age} </div>
     </div>
   );
 }
 
 // TODO: Exercise 2 - Lift state up
 // These two components need to share state - where should the state live?
-function TemperatureInput() {
-  // Problem: Each input has its own state, they can't sync
-  const [celsius, setCelsius] = useState(0);
-
+function TemperatureInput({celsius, setCelsius} : {celsius : number, setCelsius : (value:number) => void} ) {
+  
   return (
     <div className="space-y-2">
       <div>
@@ -34,20 +32,28 @@ function TemperatureInput() {
   );
 }
 
-function TemperatureDisplay() {
-  // Problem: Doesn't have access to celsius value
+function TemperatureDisplay( ) {
+
+  const [celsius, setCelsius] = useState(0);
+  
   return (
     <div className="bg-blue-50 p-4 rounded">
-      <p className="text-sm">Temperature: ??°C = ??°F</p>
+      <div>
+        <TemperatureInput celsius={celsius} setCelsius={setCelsius} />
+      </div>
+      <p className="text-sm">Temperature: {celsius}°C = {(celsius*9/5) + 32}°F</p>
     </div>
   );
 }
 
 // TODO: Exercise 3 - Events flow up, data flows down
 // Child needs to tell parent about button clicks
-function LikeButton() {
+function LikeButton( { onClikChildButton } : { onClikChildButton: ( data:number ) => void} ) {
+
+  const [like, setLike] = useState(0);
+
   return (
-    <button className="bg-blue-500 text-white px-4 py-2 rounded">
+    <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={() => {setLike(prev => prev + 1); onClikChildButton(like + 1) }}>
       ❤️ Like
     </button>
   );
@@ -55,15 +61,24 @@ function LikeButton() {
 
 function LikeCounter() {
   // TODO: This should show how many times LikeButton was clicked
+  const [ChildButton, setChildButton] = useState(0);
+
+  const handleChildButton = (data: number) => {
+    setChildButton(data)
+  }
+
   return (
-    <p className="text-sm text-gray-600">Likes: 0</p>
+    <div>
+      <p className="text-sm text-gray-600">Likes: {ChildButton}</p>
+      <LikeButton onClikChildButton={handleChildButton} />
+    </div>
   );
 }
 
 export default function PropsStatePractice() {
   // TODO: Exercise 1 - Create state to pass as props
-  const userName = 'Alice'; // Make this state so it can be changed
-  const userAge = 25; // Make this state too
+  const [userName, setUsername] = useState('Alice'); // Make this state so it can be changed
+  const [userAge, setUserAge] = useState(25); // Make this state too
 
   // TODO: Exercise 2 - Lift temperature state here
   // Then pass it down to both components
@@ -93,6 +108,8 @@ export default function PropsStatePractice() {
               <input
                 type="text"
                 placeholder="Name"
+                value={userName}
+                 onChange={(e) => setUsername(e.target.value)}
                 className="border rounded px-3 py-2 w-full"
               />
             </div>
@@ -101,6 +118,8 @@ export default function PropsStatePractice() {
               <input
                 type="number"
                 placeholder="Age"
+                value={userAge}
+                onChange={(e) => setUserAge(Number(e.target.value))}
                 className="border rounded px-3 py-2 w-full"
               />
             </div>
@@ -116,7 +135,6 @@ export default function PropsStatePractice() {
           Move temperature state to parent so both components can access it.
         </p>
         <div className="bg-gray-50 p-6 rounded-lg space-y-4">
-          <TemperatureInput />
           <TemperatureDisplay />
         </div>
         <div className="mt-3 p-3 bg-blue-50 rounded text-sm">
@@ -136,7 +154,6 @@ export default function PropsStatePractice() {
         </p>
         <div className="bg-gray-50 p-6 rounded-lg space-y-4">
           <LikeCounter />
-          <LikeButton />
         </div>
         <div className="mt-3 p-3 bg-blue-50 rounded text-sm">
           <p className="font-semibold text-blue-900 mb-1">💡 Hint:</p>

@@ -4,19 +4,36 @@ import { useState } from 'react';
 
 export default function StatePractice() {
   // TODO: Exercise 1 - Create counter state
-  // Hint: const [count, setCount] = useState(0);
+  // Hint: const [count, setCount] = useState(0);``
+  const [count, setCount] = useState(0);
 
   // TODO: Exercise 2 - Create form input state
   // Hint: const [name, setName] = useState('');
+  const [name, setName] = useState('');
 
   // TODO: Exercise 3 - Create boolean toggle state
   // Hint: const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   // TODO: Exercise 4 - Create array state for list items
   // Hint: const [items, setItems] = useState<string[]>([]);
+  const [items, setItems] = useState<string[]>(["coucou"]);
+  const [inputValue, setInputValue] = useState("");
+
+  const removeItem = (index: number) => {
+    setItems(items.filter((_,i) => i !== index))
+  }
+
+  const addItem = () => {
+    setItems([...items, inputValue]);
+    setInputValue("");
+  }
+
 
   // TODO: Exercise 5 - Create object state for form
   // Hint: const [form, setForm] = useState({ email: '', message: '' });
+
+  const [form, setForm] = useState({ email: '', message: '' });
 
   return (
     <div className="space-y-8">
@@ -44,6 +61,12 @@ export default function StatePractice() {
               <button onClick={reset}>Reset</button>
             </div>
           */}
+          <div className="flex items-center gap-4">
+              <button onClick={() => setCount(prev => prev--)}>-</button>
+              <span className="text-3xl font-bold">{count}</span>
+              <button onClick={() => setCount(prev => prev++)}>+</button>
+              <button onClick={() => setCount(0)}>Reset</button>
+            </div>
         </div>
       </section>
 
@@ -68,6 +91,16 @@ export default function StatePractice() {
               <p>Hello, {name || 'stranger'}!</p>
             </div>
           */}
+            <div className="space-y-3">
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Type your name"
+                className="border rounded px-3 py-2 w-full"
+              />
+              <p>Hello, {name || 'stranger'}!</p>
+            </div>
         </div>
       </section>
 
@@ -92,6 +125,16 @@ export default function StatePractice() {
               )}
             </div>
           */}
+            <div className="space-y-3">
+              <button onClick={() => setIsVisible(!isVisible)}>
+                {isVisible ? 'Hide' : 'Show'} Content
+              </button>
+              {isVisible && (
+                <div className="bg-blue-50 p-4 rounded">
+                  <p>🎉 This content is now visible!</p>
+                </div>
+              )}
+            </div>
         </div>
       </section>
 
@@ -124,6 +167,20 @@ export default function StatePractice() {
               </ul>
             </div>
           */}
+           <div className="space-y-3">
+              <div className="flex gap-2">
+                <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Add item" />
+                <button onClick={addItem}>Add</button>
+              </div>
+            <ul className="space-y-2">
+              {items.map((item, index) => (
+                <li key={index} className="flex justify-between bg-white p-2 rounded">
+                  <span>{item}</span>
+                  <button onClick={() => removeItem(index)}>Remove</button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
@@ -159,6 +216,23 @@ export default function StatePractice() {
               </div>
             </div>
           */}
+          <div className="space-y-3">
+            <input
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              placeholder="Email"
+            />
+            <textarea
+              value={form.message}
+              onChange={(e) => setForm({ ...form, message: e.target.value })}
+              placeholder="Message"
+            />
+            <div className="bg-white p-3 rounded">
+              <p className="text-sm font-semibold">Form Data:</p>
+              <pre className="text-xs">{JSON.stringify(form, null, 2)}</pre>
+            </div>
+          </div>
         </div>
       </section>
 

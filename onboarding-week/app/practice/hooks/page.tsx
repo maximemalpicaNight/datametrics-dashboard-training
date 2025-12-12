@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 //   return [value, toggle] as const;
 // }
 
+
 // TODO: Exercise 2 - Create useLocalStorage custom hook
 // function useLocalStorage(key: string, initialValue: string) {
 //   const [value, setValue] = useState(() => {
@@ -38,7 +39,64 @@ import { useState, useEffect } from 'react';
 //   return debouncedValue;
 // }
 
+
+function useToggle(val: boolean) {
+
+  const [value, setValue] = useState(val);
+
+  function toggleValue() {
+    setValue(!value)
+  }
+
+  return [value, toggleValue]
+}
+
+function useLocalStorage(key: string, val: string) {  
+
+  const [storage, setStorage] = useState(val);
+  
+  // get and set state
+  useEffect(() => {
+    const store = localStorage.getItem(key)
+    if (store) { setStorage(store) }
+  }, [])
+
+  // set 
+  useEffect(() => {
+    localStorage.setItem(key, storage);
+  }, [storage]);
+
+  return [storage, setStorage]
+}
+
+function useDebounce(value:string , timeout:number) {
+  // timeout before modifying the value
+  const [newValue, setNewValue] = useState("");
+  useEffect(() => {
+    setTimeout(() => { setNewValue(value) }, timeout )
+  }, [value] )
+  return newValue
+}
+
 export default function CustomHooksPractice() {
+
+  const [value, toggleValue] = useToggle(false)
+
+  const [storage, setStorage] = useLocalStorage("key", "")
+
+  const [debounceInputValue, setDebounceInputValue] = useState("")
+
+  const debounceValue = useDebounce(debounceInputValue , 1000);
+
+  const [lastSearch, setLastSearch] = useLocalStorage("lastsearch", "")
+
+  const [search, setSearch] = useState(lastSearch);
+
+  const [searchToggle, setSearchToggle] = useToggle(false);
+
+  const debouncedSearch = useDebounce(lastSearch, 2000);
+
+  
   return (
     <div className="space-y-8">
       <div>
@@ -57,6 +115,11 @@ export default function CustomHooksPractice() {
         <div className="bg-gray-50 p-6 rounded-lg space-y-4">
           <div className="bg-white p-4 rounded border">
             <p className="text-gray-500 text-sm mb-3">TODO: Implement useToggle hook and use it here</p>
+
+            <div className='text-gray-400'>
+              <div>Value : {value.toString()} </div>   
+              <button onClick={toggleValue}>Toggle</button>           
+            </div>
             {/*
               Expected implementation:
               const [isOn, toggleIsOn] = useToggle(false);
@@ -87,6 +150,10 @@ export default function CustomHooksPractice() {
         <div className="bg-gray-50 p-6 rounded-lg space-y-4">
           <div className="bg-white p-4 rounded border">
             <p className="text-gray-500 text-sm mb-3">TODO: Implement useLocalStorage hook</p>
+
+            <div className='text-gray-400'>
+              <input id="storage" value={storage} onChange={(e) => setStorage(e.target.value)} />
+            </div>
             {/*
               Expected implementation:
               const [name, setName] = useLocalStorage('userName', '');
@@ -123,6 +190,10 @@ export default function CustomHooksPractice() {
         <div className="bg-gray-50 p-6 rounded-lg space-y-4">
           <div className="bg-white p-4 rounded border">
             <p className="text-gray-500 text-sm mb-3">TODO: Implement useDebounce hook</p>
+             <div className='text-gray-400'>
+              <input id="debounceInput" type="text" value={debounceInputValue} onChange={(e) => { setDebounceInputValue(e.target.value) }} />
+              <p> Debounce Value : {debounceValue} </p>
+            </div>
             {/*
               Expected implementation:
               const [searchTerm, setSearchTerm] = useState('');
@@ -167,6 +238,18 @@ export default function CustomHooksPractice() {
         <div className="bg-gray-50 p-6 rounded-lg">
           <div className="bg-white p-4 rounded border">
             <p className="text-gray-500 text-sm">TODO: Create search UI using useToggle, useLocalStorage, useDebounce</p>
+            <div className='text-gray-400'>
+              <div className='flex gap-2'>
+                <input id="search" value={search} onChange={(e) => {setLastSearch(e.target.value); setSearch(e.target.value)}} />
+                <button onClick={setSearchToggle}>Advanced Search</button>
+              </div>
+              {searchToggle && (
+                <div>
+                  Last search : {debouncedSearch}
+                </div>
+              )}
+      
+            </div>
             {/*
               Expected:
               - useToggle for "Advanced Search" panel visibility

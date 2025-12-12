@@ -4,16 +4,52 @@ import { useState, useEffect } from 'react';
 
 export default function EffectsPractice() {
   // TODO: Exercise 1 - Fetch data on mount
-  // Hint: useEffect(() => { fetch and set data }, []);
+  // Hint: useEffect(() => { fetch and set data }, [])
+  
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/users/1')
+      .then(res => res.json())
+      .then(data => {
+        setLoading(false);
+        setUser(data);
+      });
+  }, []);
+
 
   // TODO: Exercise 2 - Update document title
   // Hint: useEffect(() => { document.title = ... }, [dependency]);
 
+  const [count, setCount] = useState(0);
+
+   useEffect(() => {
+    document.title = count.toString()
+   }, [count])
+
   // TODO: Exercise 3 - Timer with cleanup
   // Hint: useEffect(() => { const id = setInterval(...); return () => clearInterval(id); }, []);
 
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setTimer(prev => prev + 1), 1000)
+    return () => clearInterval(id);
+  }, [])
+
   // TODO: Exercise 4 - Sync with localStorage
   // Hint: useEffect(() => { localStorage.setItem(...) }, [value]);
+
+  const [value, setValue] = useState("");
+
+  useEffect(() => {
+    const store = localStorage.getItem("key")
+    if (store) { setValue(store) }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem("key", value)
+  }, [value])
 
   return (
     <div className="space-y-8">
@@ -32,6 +68,17 @@ export default function EffectsPractice() {
         </p>
         <div className="bg-gray-50 p-6 rounded-lg">
           <p className="text-gray-500">TODO: Fetch from https://jsonplaceholder.typicode.com/users/1</p>
+          <div className='text-gray-600'>
+            {loading ? (
+              <p> 
+                Loading...
+              </p>
+            ) : (
+              <p>
+                {user.name} - {user.email}
+              </p>
+            )}
+          </div>
           {/*
             Expected implementation:
             const [user, setUser] = useState(null);
@@ -60,6 +107,11 @@ export default function EffectsPractice() {
         </p>
         <div className="bg-gray-50 p-6 rounded-lg">
           <p className="text-gray-500">TODO: Create counter and update document.title</p>
+          <div className='text-gray-600'>
+            <button onClick={() => { setCount(prev => prev + 1 ) }} > Count </button>
+            <div> Count : {count}</div>
+          </div>
+
           {/*
             Expected implementation:
             const [count, setCount] = useState(0);
@@ -86,6 +138,11 @@ export default function EffectsPractice() {
         </p>
         <div className="bg-gray-50 p-6 rounded-lg">
           <p className="text-gray-500">TODO: Create timer with setInterval and cleanup</p>
+
+          <div className='text-gray-600'>
+            <p>Time in seconds: {timer}</p>
+          </div>
+
           {/*
             Expected implementation:
             const [seconds, setSeconds] = useState(0);
@@ -114,6 +171,10 @@ export default function EffectsPractice() {
         </p>
         <div className="bg-gray-50 p-6 rounded-lg">
           <p className="text-gray-500">TODO: Create input that persists to localStorage</p>
+          <div className='text-gray-600'>
+            <input id="value" type="text" value={value} onChange={(e) => setValue(e.target.value)}/>
+          </div>
+          
           {/*
             Expected implementation:
             const [text, setText] = useState('');
@@ -157,7 +218,7 @@ useEffect(() => {
   fetch('/api/data')
     .then(res => res.json())
     .then(result => setData(result));
-}); // Missing dependency array!
+}, []); // Missing dependency array!
 
 // Fix: Add empty array []`}
             </pre>
@@ -171,7 +232,7 @@ const [user, setUser] = useState(null);
 
 useEffect(() => {
   fetchUser(userId).then(setUser);
-}, []); // Missing userId in dependencies!
+}, [userId]); // Missing userId in dependencies!
 
 // Fix: Add [userId]`}
             </pre>
