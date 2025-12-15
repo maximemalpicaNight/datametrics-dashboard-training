@@ -15,9 +15,46 @@ Build on Exercise 01 knowledge and learn mutations, CRUD, and security concepts.
 
 **Key Concepts to Understand:**
 - Query vs Mutation - when to use each?
+
+We use queries to retrieve data from our server.
+We use mutations to modify data from our server.
+
 - How to pass variables to mutations?
+
+This must be specified at two levels.
+
+In the graphql mutation :
+const ADD_TEAM_MEMBER = gql`
+mutation addTeamMember($username: String!) {
+  addTeamMemebers(username: $username) {
+    username
+  }
+}`
+
+With the hook: 
+const [addTeamMember, { data, loading, error }] = useMutation(ADD_TEAM_MEMBER);
+.
+.
+.
+addTeamMember({
+  variables : {
+    { name: .... }
+  }
+})
+
+mutation AddTodo($type: String!) {
+  addTodo(type: $type) {
+    id
+  }
+}
+
 - What is returned from a mutation?
+
+useMutation can return three pieces of data: { data, loading, error }, where data is the input data, loading indicates when the mutation is in progress, and error indicates if an error has been detected.
+
 - How to handle mutation errors?
+
+First, you need to retrieve the return error in the hook, then use it in the code with, for example, an if (error) { return ....}
 
 ### 2. CRUD Operations & REST vs GraphQL (30-40 min)
 **Why:** CRUD is fundamental to all applications. Understand the pattern.
@@ -28,8 +65,21 @@ Build on Exercise 01 knowledge and learn mutations, CRUD, and security concepts.
 
 **Key Concepts to Understand:**
 - What does CRUD stand for?
+
+CRUD represents the four operations that can be performed on data.
+Create = create new data
+Read = read (retrieve) data
+Update = modify data
+Delete = delete data
+
 - How do you update Apollo cache after mutations?
+
 - What is `refetchQueries` and when to use it?
+
+RefetchQuery is a parameter of the useMutation hook that allows you to refetch a query after the mutation. In the refetch, you can specify the query to be performed.
+
+You must use it if you want to refresh all the data (because we specify the query directly).
+
 
 ### 3. Role-Based Access Control (RBAC) (40-50 min)
 **Why:** Security is critical. You must understand authorization patterns.
@@ -41,9 +91,21 @@ Build on Exercise 01 knowledge and learn mutations, CRUD, and security concepts.
 
 **Key Concepts to Understand:**
 - Authentication vs Authorization - what's the difference?
+
+Authentication allows you to know who the person is and authorization allows you to know what that person can do.
+
 - What are roles and permissions?
+
+Roles allow you to define multiple permissions, for example an ADMIN role could allow Edit, Delete, Add and a USER role of read.
+
 - Why must authorization happen on the server?
+
+You must never trust what the client sends. By verifying what the client sends on the server side we ensure that we accept the right data coming from the right person.
+Example: verify the input data, the cookies.
+
 - How to implement role-based UI in React?
+
+You can visually modify what the user can see by retrieving data (cookies, localStorage) and displaying content based on that.
 
 ### 4. Form Handling in React (35-45 min)
 **Why:** Forms are everywhere. Master controlled components.
@@ -54,8 +116,16 @@ Build on Exercise 01 knowledge and learn mutations, CRUD, and security concepts.
 
 **Key Concepts to Understand:**
 - What is a controlled component?
+
+A controlled component allows you to manage the value of an input in React State. So if the user types in the input you need to use onChange to modify the value.
+
 - How to manage form state with useState?
+
+<input value={team} onChange={(e) => setTeam(e.target.value)} />
+
 - When to validate: onChange vs onBlur vs onSubmit?
+
+You must validate data with onSubmit. Once the client clicks the Submit button, you can process the input values in a handleSubmit function for example and verify each input and display an error in the UI if the input is not valid.
 
 ### 5. User Experience Patterns (25-35 min)
 **Why:** Good UX separates junior from senior developers.
@@ -66,8 +136,13 @@ Build on Exercise 01 knowledge and learn mutations, CRUD, and security concepts.
 
 **Key Concepts to Understand:**
 - When to show confirmation dialogs?
+
+Dialogs should be displayed before performing actions of high importance, for example permanently deleting data, which is irreversible. If an action is critical and cannot be undone, it is important to consider adding a confirmation dialog.
+
 - How to display errors without frustrating users?
 - Why disable buttons during loading?
+
+This prevents the user from clicking multiple times while an action is in progress. If the user clicks again, it could generate multiple unwanted requests.
 
 ### 6. Apollo Cache Management (30-40 min)
 **Why:** Efficient cache management = fast, responsive apps.
@@ -415,21 +490,21 @@ After completing this exercise, answer these questions **in your own words**:
 
 Your answer:
 ```
-[Write your explanation here]
+A query allows you to retrieve data from the backend. A mutation allows you to modify/add data from the backend.
 ```
 
 **Q: Explain the structure of the object returned by `useMutation`. What are the key properties?**
 
 Your answer:
 ```
-[Write your explanation here]
+useMutation returns the data (input data), loading (current status of requests), error (if the request generated an error).
 ```
 
 **Q: What is the purpose of `refetchQueries` in mutation options? Why do we need it?**
 
 Your answer:
 ```
-[Write your explanation here]
+It allows you to refetch data just after a mutation, which then allows you to display the new data. Example: imagine a list of items, here if we add a new item, the refetchQueries would allow us after the mutation, to retrieve the new list of items.
 ```
 
 ### 2. CRUD Operations
@@ -438,14 +513,19 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+CRUD combines four operations: Create, Read, Update, Delete.
+Example:
+Create = to add a new Member.
+Read = to retrieve the list of members.
+Update = to modify a member (their roles).
+Delete = to delete a member.
 ```
 
 **Q: Why is it important to show a confirmation dialog before deleting data?**
 
 Your answer:
 ```
-[Write your explanation here]
+It allows the user to have visual feedback on the state of the action they just performed, without this the user has no idea if they actually deleted the data or not.
 ```
 
 ### 3. Role-Based Access Control
@@ -454,14 +534,14 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+I implement this by retrieving the role from localStorage. In this case, once the role is retrieved, we can dynamically display content based on that.
 ```
 
 **Q: What security risk exists if you only hide UI buttons based on role (client-side)? How is this mitigated?**
 
 Your answer:
 ```
-[Write your explanation here]
+The client can modify the UI and therefore take advantage of roles they should not have access to. It is preferable to have a verification of roles on the backend.
 ```
 
 ### 4. Form Handling & Validation
@@ -470,14 +550,17 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+Validating a form when it is submitted allows you to filter before even making the request to the backend. we ensure that the client (in the browser) sends the right data and we can give them visual feedback of potential inputs that are not valid.
+
+However, you should also verify the data on the backend because verifying the data only on the frontend can cause security problems.
 ```
 
 **Q: Compare client-side validation (Zod) vs server-side validation. When do you need both?**
 
 Your answer:
 ```
-[Write your explanation here]
+In the case of Zod on the frontend and validation on the backend, you should use both.
+Because front-end validation does not guarantee 100% that you will receive the same data on the backend. By validating on the server and on the client we ensure that the client has the best way to validate their inputs (with visual feedback) + that it is a legitimate client that performs this input.
 ```
 
 ### 5. Apollo Cache & State Management
@@ -486,14 +569,14 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+By default, Apollo updates the cache because it detects that, for example, an updateUser mutation returns a User type. Otherwise, you must specify the query to refetch using refetchQueries. In both cases, this re-renders the UI with the new data.
 ```
 
 **Q: Explain the difference between using `refetchQueries` vs manually updating the cache after a mutation.**
 
 Your answer:
 ```
-[Write your explanation here]
+Using reftechQueries retrieves all data, so if we update a list, we have to retrieve the entire list. However, with manual cache management, we only retrieve the data returned from the mutation to put it in the cache.
 ```
 
 ### 6. Error Handling
@@ -502,14 +585,16 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+- A validation error. This can occur even before the mutation.
+- A database error. Example: updating a user that does not exist, adding an email address that already exists.
+- A network error, the backend is unavailable, ‘Internal Server Error’.
 ```
 
 **Q: How did you handle and display errors to the user in your implementation?**
 
 Your answer:
 ```
-[Write your explanation here]
+In exercises, alerts are mainly used for errors. For example, when the database is not available / the user has been successfully updated.
 ```
 
 ### 7. UX & Loading States
@@ -518,14 +603,14 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+This prevents the customer from clicking the button multiple times and potentially making multiple changes. During the change process, you must then add a loading indicator and disable the button.
 ```
 
 **Q: What should happen if a mutation fails? Should you close the modal/form? Why or why not?**
 
 Your answer:
 ```
-[Write your explanation here]
+The form with the data should be reopened and the reason why the change was not successful should be displayed. By closing the modal, we delete the data and force the user to start over.
 ```
 
 ---

@@ -46,8 +46,6 @@ export default function Dashboard() {
         }
     });
 
-    console.log(data);
-
     const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         console.log(event.target.value);
         setFilter(event.target.value)
