@@ -47,7 +47,7 @@ export default function AdminActions({id}: {id:string}) {
         }
     );
 
-    const handleDeleteTeamMember = () => {
+    function handleDeleteTeamMember() {
         deleteTeamMember({
             variables: {
                 id,

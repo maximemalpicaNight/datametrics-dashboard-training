@@ -40,8 +40,6 @@ export default function TeamPage() {
   const currentUser = userData ? JSON.parse(userData) : null;
   const isAdmin = currentUser?.role === 'ADMIN';
 
-  console.log(data)
-
   if (loading) {
     return (
       <div className="flex items-center gap-2">

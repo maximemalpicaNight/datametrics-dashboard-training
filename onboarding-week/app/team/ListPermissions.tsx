@@ -50,7 +50,7 @@ export default function ListPermissions({ permissions, isAdmin, id} : {permissio
         }
     );
 
-    const handleUpdatePermission = (permissionKey: string) => {
+    function handleUpdatePermission(permissionKey: string) {
         const updated = {
             ...parsed,
             [permissionKey]: !parsed[permissionKey]

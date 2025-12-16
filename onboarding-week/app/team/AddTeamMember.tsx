@@ -69,7 +69,7 @@ export default function AddTeamMember() {
         }
     );
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         try {
             teamMemberSchema.parse(formData);
