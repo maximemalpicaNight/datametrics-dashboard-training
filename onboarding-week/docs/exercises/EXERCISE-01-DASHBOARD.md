@@ -16,8 +16,17 @@ Understanding these concepts is crucial. Don't skip straight to coding - invest 
 
 **Key Concepts to Understand:**
 - What is a query vs mutation?
+
+Query And Mutation describes what type of operation you intend to do.
+We use queries to fetch data, we use mutations to modify server-side data.
+
 - How do variables work in GraphQL?
+
+Variables in GraphQL allows you to pass dynamic data into queries so you can reuse the same query with different inputs.
+
 - What is a schema and type system?
+
+The schema is all the elements of my app. The system types these elements.
 
 ### 2. Apollo Client Basics (45-60 min)
 **Why:** Apollo Client is your data-fetching library. You must understand how it works with React.
@@ -29,9 +38,21 @@ Understanding these concepts is crucial. Don't skip straight to coding - invest 
 
 **Key Concepts to Understand:**
 - What does `useQuery` return?
+
+useQuery returns an object containing the retrieved data, loading (a Boolean value that defines the status of the request), and error (if a resource error is detected).
+
 - When does a query execute?
+
+The request is made when the component that uses it is mounted, i.e. when the DOM is updated.
+
 - How to handle loading and error states?
+
+You can use the loading and error values to handle these two states.
+
 - What is the Apollo cache?
+
+When Apollo fetches query from the server, it automatically caches the result locally. 
+This makes later executions of that same query extremely fast.
 
 ### 3. Data Visualization with Recharts (30-45 min)
 **Why:** You'll build charts - understand the basics first.
@@ -42,7 +63,13 @@ Understanding these concepts is crucial. Don't skip straight to coding - invest 
 
 **Key Concepts to Understand:**
 - How to structure data for Recharts?
+
+A rechart component must receive data that is an array of objects, where each object is a coordinate. This also depends on the chart being used.
+
 - What is ResponsiveContainer?
+
+In the case of rechart, it allows you to keep the correct proportion of the chart regardless of the page size (more often in cases where it is resized).
+
 - Basic chart components (LineChart, XAxis, YAxis, Tooltip)
 
 ### 4. Date Manipulation with date-fns (20-30 min)
@@ -65,8 +92,23 @@ Understanding these concepts is crucial. Don't skip straight to coding - invest 
 
 **Key Concepts to Understand:**
 - How to type React component props?
+
+two methods are possible
+
+Directly inside the props: Button({ variant }: { variant: string })
+With a type defined above the component: 
+type ButtonProps = { variant: string } /
+Button({ variant }: ButtonProps)
+
 - How to type useState?
+
+By using the "<>" right after useState, you are typing the value that the state will hold.
+Example: `const [list, setList] = useState<string[]>(["Hello", "World"]);`
+Here it is an array of strings.
+
 - How to type Apollo query results?
+
+After Apollo's Hook with “<>,” you must then put the expected type inside. Example : useQuery<Todo[]>(...)
 
 ---
 
@@ -75,10 +117,24 @@ Understanding these concepts is crucial. Don't skip straight to coding - invest 
 Answer these questions to verify your understanding:
 
 1. Can you explain what a GraphQL query is in one sentence?
+
+A GraphQL query allows you to specify the data you want to retrieve from the server directly from the client.
+
 2. What three main things does `useQuery` return?
+
+useQuery returns: data (the data), isLoading (loading status), and error (any errors).
+
 3. What format does Recharts expect data to be in?
+
+Array of object.
+
 4. Why would you use `useMemo` when processing an array of metrics?
+
+This allows metric values to be retained across multiple renderings without recalculating them. To change this value, you must change these dependencies.
+
 5. How do you format a date to "2024-01-31" using date-fns?
+
+format(new Date(), 'yyyy-MM-dd')
 
 If you can't answer these, **go back and review the materials above**. Don't proceed until you understand the fundamentals.
 
@@ -171,21 +227,43 @@ After completing this exercise, answer these questions **in your own words** (no
 
 Your answer:
 ```
-[Write your explanation here]
+useQuery (from Apollo) is a hook that allows you to perform a query in GraphQL. 
+It performs a query to the GraphQL server.
+It returns: data (retrieved data), loading (true during loading), error (the error if there is one), refetch (function that allows to refetch, redo the query).
+
+It executes:
+- During the first render (after the component is mounted)
+- If a variable value changes
+- if there is a pollInterval
+- if you use refetch
+
 ```
 
 **Q: What is the difference between `loading`, `error`, and `data` returned by `useQuery`?**
 
 Your answer:
 ```
-[Write your explanation here]
+- loading is a boolean, true = request is in progress, false = query finished.
+- error contains the error if the request failed, otherwise null.
+- data contains the data retrieved from the GraphQL server once the request is successful.
+
 ```
 
 **Q: How would you refetch the data after the user clicks a "Refresh" button?**
 
 Your answer:
 ```
-[Write your explanation here]
+You can use the reftech function provided by useQuery in a click handler.
+example :
+
+function handleRefetchClick() {
+  refetch();
+}
+
+...
+
+<button onClick={handleRefectClick}>
+
 ```
 
 ### 2. Data Processing
@@ -194,14 +272,20 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+
+If the data received contains too much information, you can “optimize the query result,” for example by summing the metrics.
+
+Example: instead of displaying a list of results, you can sum them and display the total. This improves performance by reducing the amount of data to be displayed.
+
 ```
 
 **Q: What is the purpose of using `reduce()` for calculations? Show a simple example.**
 
 Your answer:
 ```
-[Write your explanation here]
+
+With the reduce method, you can calculate a sum and other types of grouping.
+
 ```
 
 ### 3. React & Performance
@@ -210,14 +294,18 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+useMemo should be used to memoize expensive computations and prevent unnecessary recalculations on every render.
+
+For the exercise, i use it to prevent infinite loops by keeping startDate and endDate stable in memory until the filter changes.
+
 ```
 
 **Q: Why is it important to show loading and error states? What happens if you don't?**
 
 Your answer:
 ```
-[Write your explanation here]
+By displaying loading and error states in the UI, users get visual feedback about the current state of the page. Without this, users have no information about the request status.
+
 ```
 
 ### 4. TypeScript
@@ -226,7 +314,7 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+By typing the graphql response directly into the useQuery<...> hook, you can take advantage of typescript (auto completion, error prevention, ensuring you are working on the correct data).
 ```
 
 ### 5. Code Quality
@@ -235,7 +323,8 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+Without optional chaining "?", If data is undefined, it will crash the component because operations are then performed on invalid data.
+
 ```
 
 **Q: Explain the difference between these two approaches:**
@@ -249,7 +338,9 @@ const total = metrics?.reduce((sum, m) => sum + m.revenue, 0) || 0;
 
 Your answer:
 ```
-[Write your explanation here]
+In approach A, we assume that metrics always contains data, so if metrics has no data, the component crashes.
+In approach B, using the optional chaining, if metrics is undefined, it returns 0 thanks to the || 0.
+
 ```
 
 ---

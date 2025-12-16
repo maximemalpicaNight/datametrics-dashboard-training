@@ -1,3 +1,5 @@
+import Dashboard from "./Dashboard"
+
 export default function DashboardPage() {
   return (
     <div className="space-y-6">
@@ -32,6 +34,8 @@ export default function DashboardPage() {
           <li>Format numbers with utility functions from <code className="bg-gray-200 px-1 rounded">lib/utils.ts</code></li>
         </ul>
       </div>
+
+      <Dashboard />
     </div>
   );
 }
