@@ -1,3 +1,5 @@
+import Charts from "./Charts";
+
 export default function AnalyticsPage() {
   return (
     <div className="space-y-6">
@@ -33,6 +35,7 @@ export default function AnalyticsPage() {
           <li>Create reusable chart components for consistency</li>
         </ul>
       </div>
+      <Charts />
     </div>
   );
 }

@@ -464,21 +464,31 @@ After completing this exercise, answer these questions **in your own words**:
 
 Your answer:
 ```
-[Write your explanation here]
+
+Apollo Client allows you to make requests directly to a GraphQL backend. With React Query, you can make requests to GraphQL but also to APIs.
+
+If our backend is GraphQL, we should use Apollo.
+And if we need to potentially use other types of backends, we should use React Query.
+
 ```
 
 **Q: Explain how React Query's caching works. What is `staleTime` and `cacheTime`?**
 
 Your answer:
 ```
-[Write your explanation here]
+When React Query fetches data, it stores it in cache. You can identify a query using its queryKey.
+
+So if you refetch the data, it first checks the cache to see if the data is already there.
+
+- staleTime: How long data remains “fresh” (no need to refetch).
+- cacheTime: How long data remains in cache before being deleted.
 ```
 
 **Q: Why did we use React Query for this page instead of Apollo Client?**
 
 Your answer:
 ```
-[Write your explanation here]
+In the case of the app, we combined React Query and Apollo. We use React Query to manage the cache, but we perform the GraphQL query with Apollo.
 ```
 
 ### 2. Data Transformation
@@ -487,14 +497,16 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+useMemo allows you to avoid recalculating between renders. So imagine you perform a calculation that depends on data.
+
+In this case, you will perform the calculation only when the value of data changes.
 ```
 
 **Q: Show an example of how you transformed the raw metrics data into chart-ready format.**
 
 Your answer:
 ```
-[Write your explanation here]
+In the exercises, I used it to perform a reduce on the metrics values. With this, on each re-render i don't have to recalculate the reduce.
 ```
 
 ### 3. Period Comparisons
@@ -503,14 +515,16 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+To calculate the week-over-week variation, I compared the sum of the metrics for the current week with that of the previous week, then applied the formula: (current - previous) / previous * 100
 ```
 
 **Q: What edge cases did you need to handle in period comparisons? (e.g., division by zero)**
 
 Your answer:
 ```
-[Write your explanation here]
+Certain mathematical rules must be checked, such as division by 0, because this returns an infinite number and is therefore invalid with the data that is supposed to be displayed in the statistics.
+
+I check this using the following condition : if (!currentMetrics || !prevMetrics || currentMetrics.length === 0 || prevMetrics.length === 0) return null;
 ```
 
 ### 4. Data Visualization
@@ -519,14 +533,14 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+For trends over time, I used LineChart to show changes across dates. For comparing values, I used BarChart to make differences between metrics more visible.
 ```
 
 **Q: How did you make the charts responsive? What Recharts features did you use?**
 
 Your answer:
 ```
-[Write your explanation here]
+I used the ResponsiveContainer component. It automatically adjusts the chart size based on the parent container width and height.
 ```
 
 ### 5. Export Functionality
@@ -535,14 +549,20 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+First, you need to define the file structure as a large string that groups all the values you want to export. In the case of CSV, you need to create the headers, then create the list of data, all separated by commas.
+
+Once the string is ready, you need to create a Blob (binary data in memory). However, to allow downloading this blob, you need to create a link to it and in JavaScript click on this link, which triggers the download. Finally, after the click, you need to delete the link.
 ```
 
 **Q: What are the differences between CSV and JSON exports? When would a user prefer each?**
 
 Your answer:
 ```
-[Write your explanation here]
+CSV has a simpler structure, it is simply data separated by commas.
+JSON, is more structured. The data is organized as key–value pairs (and also arrays).
+
+For graphical or spreadsheet data, CSV is preferable because we just need to display columns without any real structure.
+As soon as we want to work with more organized data, JSON should be considered.
 ```
 
 ### 6. Performance Optimization
@@ -551,14 +571,19 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+I mainly used useMemo to avoid recalculating metrics transformations on every render.
+
+I also used useQuery to automatically cache the fetched data and prevent unnecessary requests to the server.
+
+These optimizations are important because they reduce computational load and network requests
+
 ```
 
 **Q: How does React Query help with performance compared to fetching data on every render?**
 
 Your answer:
 ```
-[Write your explanation here]
+React Query caches the fetched data automatically, so it doesn't need to be fetched again on every render.
 ```
 
 ### 7. Custom Hooks
@@ -567,14 +592,15 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+We can reuse this hook in deferent components. i used it in the Charts and Cards
 ```
 
 **Q: Show the signature of your custom hook and explain what it returns.**
 
 Your answer:
 ```
-[Write your explanation here]
+Signature : export default function useMetrics(startDate: string, endDate: string, organizationId: string)
+return : It returns a useQuery from React Query, so we can use this hook like a use query but with custom parameters.
 ```
 
 ---

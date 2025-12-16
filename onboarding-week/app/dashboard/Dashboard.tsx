@@ -26,7 +26,7 @@ const GET_METRICS = gql`
 
 export default function Dashboard() {
 
-    const [filter, setFilter] = useState("v3");
+    const [filter, setFilter] = useState("7d");
     
     const { startDate, endDate } = useMemo(() => {
         const end = new Date();
@@ -45,8 +45,6 @@ export default function Dashboard() {
             startDate: startDate
         }
     });
-
-    console.log(data);
 
     const handleFilterChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         console.log(event.target.value);
