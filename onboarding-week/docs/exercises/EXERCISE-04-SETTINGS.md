@@ -512,21 +512,41 @@ After completing this exercise, answer these questions **in your own words**:
 
 Your answer:
 ```
-[Write your explanation here]
+With Zod, you can validate data without writing validation logic. This ensures that after Zod validation, you are using valid data.
 ```
 
 **Q: Explain how `z.infer` works. What TypeScript benefit does it provide?**
 
 Your answer:
 ```
-[Write your explanation here]
+its used to generate typescript schema based on zod schema.
+This allows you to use this type on our data and take advantage of TypeScript without having to create it ourselves
 ```
 
 **Q: Show your validation schema for the profile form. Explain each field's rules.**
 
 Your answer:
 ```
-[Write your explanation here]
+const profileSchema = z.object({
+  name: z
+    .string()
+    .min(2, 'Name must be at least 2 characters')
+    .max(100, 'Name must be less than 100 characters'),
+  email: z
+    .string()
+    .email('Invalid email format')
+    .min(1, 'Email is required'),
+  avatar: z
+    .string()
+    .url('Must be a valid URL')
+    .optional()
+    .or(z.literal('')), // Allow empty string
+});
+
+There is a object with 3 values : 
+- name: string with a minimum of 2 characters and a maximum of 100 characters.
+- email: string that must be a valid email address.
+- avatar: optional string that must be a valid URL.
 ```
 
 ### 2. Controlled Components
@@ -535,14 +555,15 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+A controlled component allows you to manage the value of an input with the state. So if the user types in the input you need to use onChange to modify the value. I used it to validate the data each time the user's input changed.
 ```
 
 **Q: Why do we use `useState` for form data instead of uncontrolled inputs with refs?**
 
 Your answer:
 ```
-[Write your explanation here]
+With useState, you can check the input every time the client changes it and make more advanced validation logic, particularly if the UI needs to be modified and therefore re-rendered.
+Example: display a progress bar showing the completion status of the form.
 ```
 
 ### 3. Form State Management
@@ -551,14 +572,15 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+A form is considered “dirty” when a user has changed at least one field from its initial value. 
+we have to compare the previous value with the current value.
 ```
 
 **Q: Explain the flow from user typing in an input to validation error showing on screen.**
 
 Your answer:
 ```
-[Write your explanation here]
+When the user types in an input, the form state is updated with the new value. The validation schema check the value. If the value is invalid, an error message is generated and displayed next to the input field.
 ```
 
 ### 4. UX & Error Handling
@@ -567,21 +589,22 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+Validation can happen on change or on submit depending on the UX needs. 
+I chose onChange to verify the user input on each change in the input, it show errors while the user is typing but still provides quick feedback.
 ```
 
 **Q: Why shouldn't you clear the form when a mutation fails?**
 
 Your answer:
 ```
-[Write your explanation here]
+If a mutation fails, clearing the form would force the user to re-enter all their data. Keeping the form values allows the user to fix the issue and retry easily.
 ```
 
 **Q: What's the difference between field-level errors and form-level errors? Give examples.**
 
 Your answer:
 ```
-[Write your explanation here]
+Field level allow you to display error near the input field (exemple : username must be less than 50 characters ). On the other hand, form level are server/general error or general feedback (exemple : user already exist ).
 ```
 
 ### 5. Loading States
@@ -590,14 +613,14 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+This saves the user from having to click several times. Without this, the user could click the button multiple times and execute the mutation multiple times.
 ```
 
 **Q: What should the "Save" button show during these states: idle, submitting, success, error?**
 
 Your answer:
 ```
-[Write your explanation here]
+It should display a loading status during the execution of the request, which will show the user that the request is in progress.
 ```
 
 ### 6. Data Flow
@@ -606,14 +629,16 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+First, the user clicks, and the UI should display a loading state.
+Then, a form-level success message should be shown to confirm that the request was completed successfully.
 ```
 
 **Q: What happens to the Apollo cache after you update the user? Does the `me` query update automatically?**
 
 Your answer:
 ```
-[Write your explanation here]
+Apollo allows the cache to be refreshed automatically only if the mutation has the same schema as the query.
+If we make a query that returns the User schema, a mutation that includes the User will trigger a refresh.
 ```
 
 ### 7. TypeScript & Type Safety
@@ -622,14 +647,15 @@ Your answer:
 
 Your answer:
 ```
-[Write your explanation here]
+Zod allows you to generate typescript object based on zod object.
+exemple : type ProfileFormData = z.infer<typeof profileSchema>;
 ```
 
 **Q: What type errors would you get without proper typing on the form state?**
 
 Your answer:
 ```
-[Write your explanation here]
+We could use values that do not exist in the data we are using. And so doing this can create an error directly on the UI (example: create a data.username, but our data does not have a username key).
 ```
 
 ---
