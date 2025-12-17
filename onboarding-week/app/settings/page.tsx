@@ -1,3 +1,5 @@
+import Settings from "./Settings";
+
 export default function SettingsPage() {
   return (
     <div className="space-y-6">
@@ -33,6 +35,9 @@ export default function SettingsPage() {
           <li>Show loading state on the submit button during mutations</li>
         </ul>
       </div>
+        
+      <Settings />
+
     </div>
   );
 }
